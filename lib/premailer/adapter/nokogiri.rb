@@ -138,7 +138,7 @@ class Premailer
       end
 
       # Create a <tt>style</tt> element with un-mergable rules (e.g. <tt>:hover</tt>)
-      # and write it into the <tt>body</tt>.
+      # and write it into the <tt>head</tt>.
       #
       # <tt>doc</tt> is an Nokogiri document and <tt>unmergable_css_rules</tt> is a Css::RuleSet.
       #
@@ -150,9 +150,9 @@ class Premailer
           style_tag = "<style type=\"text/css\">\n#{styles}</style>"
           unless (body = doc.search('body')).empty?
             if doc.at_css('body').children && !doc.at_css('body').children.empty?
-              doc.at_css('body').children.before(::Nokogiri::XML.fragment(style_tag))
+              doc.at_css('head').children.after(::Nokogiri::XML.fragment(style_tag))
             else
-              doc.at_css('body').add_child(::Nokogiri::XML.fragment(style_tag))
+              doc.at_css('body').add_next_sibling(::Nokogiri::XML.fragment(style_tag))
             end
           else
             doc.inner_html = style_tag += doc.inner_html
